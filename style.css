@@ -1,0 +1,150 @@
+/* --- Custom CSS --- */
+html { 
+    scroll-behavior: smooth; 
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #111827;
+}
+
+.book-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.book-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+}
+
+.loader {
+    border: 4px solid #f3f3f3; 
+    border-top: 4px solid #3b82f6;
+    border-radius: 50%; 
+    width: 40px; 
+    height: 40px;
+    animation: spin 1s linear infinite; 
+    margin: 3rem auto;
+}
+
+.modal-loader { /* Smaller loader for modal */
+    border: 3px solid rgba(243,243,243,0.3); 
+    border-top: 3px solid #60a5fa;
+    border-radius: 50%; 
+    width: 24px; 
+    height: 24px;
+    animation: spin 1s linear infinite; 
+    margin: 1rem auto;
+}
+
+@keyframes spin { 
+    0% { transform: rotate(0deg); } 
+    100% { transform: rotate(360deg); } 
+}
+
+.genre-btn { 
+    transition: background-color 0.2s ease, transform 0.2s ease; 
+}
+
+.genre-btn:hover { 
+    background-color: #3b82f6; 
+    transform: translateY(-2px); 
+}
+
+.modal-backdrop {
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8); 
+    backdrop-filter: blur(5px);
+    display: none; 
+    justify-content: center; 
+    align-items: center; 
+    z-index: 100;
+}
+
+.modal-content {
+    background-color: #1f2937; 
+    color: #e5e7eb;
+    padding: 2rem; 
+    border-radius: 1rem;
+    width: 90%; 
+    max-width: 4xl; 
+    max-height: 90vh;
+    overflow-y: auto; 
+    position: relative;
+    transform: scale(0.9); 
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.modal-backdrop.active .modal-content { 
+    transform: scale(1); 
+    opacity: 1; 
+}
+
+.modal-close-btn {
+    position: absolute; 
+    top: 1rem; 
+    right: 1rem;
+    background: #4b5563; 
+    border-radius: 50%;
+    width: 2.5rem; 
+    height: 2.5rem; 
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+    cursor: pointer; 
+    transition: background-color 0.2s;
+}
+
+.modal-close-btn:hover { 
+    background: #6b7280; 
+}
+
+.fav-btn { 
+    cursor: pointer; 
+    transition: transform 0.2s; 
+}
+
+.fav-btn:hover { 
+    transform: scale(1.1); 
+}
+
+.fav-btn .heart-icon { 
+    fill: #9ca3af; 
+    transition: fill 0.2s; 
+}
+
+.fav-btn.favorited .heart-icon { 
+    fill: #ef4444; 
+}
+
+/* Styles for Gemini Features */
+.gemini-btn {
+    background-image: linear-gradient(to right, #4f46e5, #9333ea);
+    border: none;
+}
+
+.gemini-btn:hover {
+     background-image: linear-gradient(to right, #4338ca, #7e22ce);
+}
+
+.gemini-content {
+    background-color: rgba(17, 24, 39, 0.8);
+    border-left: 3px solid #60a5fa;
+    padding: 1rem;
+    margin-top: 1.5rem;
+    border-radius: 0.5rem;
+}
+
+.gemini-content ul {
+    list-style-position: inside;
+    padding-left: 1rem;
+}
+
+.gemini-content li {
+    margin-bottom: 0.75rem;
+}
