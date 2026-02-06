@@ -20,6 +20,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const genreSection = document.getElementById('genre-section');
 
     // --- Gemini AI Integration ---
+    /**
+     * Calls the Gemini API using exponential backoff for reliability.
+     */
     async function callGemini(prompt, retries = 5, delay = 1000) {
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
         
@@ -46,13 +49,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Data Fetching & Logic ---
+    /**
+     * Fetches books and applies filtering (max 3 authors).
+     */
     async function fetchBooks(query) {
         try {
             const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=40`);
             const data = await res.json();
             if (!data.items) return [];
 
-            // Filter: Only show books with 3 or fewer authors to avoid massive collections
+            // Filter: Remove anthologies/collections (more than 3 authors)
             return data.items.filter(book => (book.volumeInfo.authors?.length || 1) <= 3);
         } catch (err) {
             console.error("Search failed:", err);
@@ -60,6 +66,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    /**
+     * Sorts and renders book cards into a container.
+     */
     function renderBooks(container, books) {
         container.innerHTML = '';
         
@@ -68,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Sort: Least authors first for visual clarity
+        // Sort: Books with fewer authors appear first for a cleaner look
         books.sort((a, b) => {
             const countA = a.volumeInfo.authors?.length || 1;
             const countB = b.volumeInfo.authors?.length || 1;
@@ -107,19 +116,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
-     * Resets the home page to its initial state (Fresh start)
+     * Resets the home page to its initial state (Fresh start with Best Sellers)
      */
     async function resetHome() {
         searchInput.value = '';
+        
+        // Update the main header to reflect "Best Sellers"
+        const mainTitle = document.querySelector('#home-view h1');
+        if (mainTitle) {
+            mainTitle.innerHTML = 'Current <span class="text-blue-500">Best Sellers</span>';
+        }
+
         bookList.innerHTML = '<div class="loader"></div>';
-        const initialBooks = await fetchBooks("classic masterpieces");
+        // Changed search query to fetch actual bestsellers
+        const initialBooks = await fetchBooks("bestselling books 2025");
         renderBooks(bookList, initialBooks);
     }
 
     // --- Modal Control ---
     async function openModal(id) {
         modalContentBox.innerHTML = '<div class="loader"></div>';
-        bookModal.classList.add('active');
+        bookModal.classList.add('active'); // CSS handles display:flex via .active class
         
         try {
             const res = await fetch(`https://www.googleapis.com/books/v1/volumes/${id}`);
@@ -143,28 +160,36 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
 
+            // AI Logic: Summary
             document.getElementById('ai-sum-btn').onclick = async (e) => {
-                e.currentTarget.disabled = true;
+                const btn = e.currentTarget;
+                btn.disabled = true;
                 const box = document.getElementById('ai-response-box');
                 box.classList.remove('hidden');
                 box.innerHTML = '<div class="modal-loader"></div>';
-                const summary = await callGemini(`Summarize "${info.title}" by ${info.authors?.join(', ')} in exactly 3 impactful, spoiler-free sentences.`);
+                
+                const prompt = `Summarize the book "${info.title}" by ${info.authors?.join(', ')}. Focus on the hook and theme for a potential reader. Spoiler-free. Max 4 sentences.`;
+                const summary = await callGemini(prompt);
+                
                 box.innerHTML = `<p class="italic text-purple-100 leading-relaxed">"${summary}"</p>`;
                 document.getElementById('book-description').classList.add('hidden');
             };
 
+            // AI Logic: Questions
             document.getElementById('ai-ques-btn').onclick = async (e) => {
-                e.currentTarget.disabled = true;
+                const btn = e.currentTarget;
+                btn.disabled = true;
                 const box = document.getElementById('ai-response-box');
                 box.classList.remove('hidden');
                 box.innerHTML = '<div class="modal-loader"></div>';
-                const text = await callGemini(`Provide 3 discussion questions for "${info.title}".`);
-                box.innerHTML = `<div class="text-sm leading-relaxed">${text.replace(/\n/g, '<br>')}</div>`;
+                
+                const questions = await callGemini(`Provide 3 deep discussion questions for the book "${info.title}".`);
+                box.innerHTML = `<div class="text-sm leading-relaxed">${questions.replace(/\n/g, '<br>')}</div>`;
             };
 
             document.getElementById('close-modal').onclick = closeModal;
         } catch (err) {
-            modalContentBox.innerHTML = `<p class="text-red-400 text-center py-10">Error loading details.</p>`;
+            modalContentBox.innerHTML = `<p class="text-red-400 text-center py-10">Error loading details. Please try again.</p>`;
         }
     }
 
@@ -175,19 +200,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Event Listeners ---
     document.addEventListener('click', async (e) => {
+        // Modal Triggers
         const trigger = e.target.closest('.book-trigger');
         if (trigger) openModal(trigger.dataset.id);
 
+        // Favorite Toggle
         const favBtn = e.target.closest('.fav-btn');
         if (favBtn) {
             const id = favBtn.dataset.id;
             const index = favorites.findIndex(f => f.id === id);
+            
             if (index > -1) {
                 favorites.splice(index, 1);
                 favBtn.classList.remove('favorited');
             } else {
                 const res = await fetch(`https://www.googleapis.com/books/v1/volumes/${id}`);
-                favorites.push(await res.json());
+                const book = await res.json();
+                favorites.push(book);
                 favBtn.classList.add('favorited');
             }
             localStorage.setItem('nook_favs_v3', JSON.stringify(favorites));
@@ -200,7 +229,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const viewId = link.dataset.view;
             navigate(viewId);
             
-            // Logic integrated: Reset home if "Home" clicked in Navbar
             if (viewId === 'home-view') resetHome();
             if (viewId === 'favorites-view') renderBooks(document.getElementById('favorites-list'), favorites);
             if (viewId === 'authors-pick-view') {
@@ -211,32 +239,55 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     });
 
-    // Logic integrated: Reset home if Logo is clicked
     logo.onclick = (e) => { 
         e.preventDefault(); 
         navigate('home-view');
         resetHome();
     };
 
+    // Search Operations
     searchButton.onclick = async () => {
         const query = searchInput.value.trim();
         if (!query) return;
+
+        // Reset the header when a specific search is performed
+        const mainTitle = document.querySelector('#home-view h1');
+        if (mainTitle) {
+            mainTitle.innerHTML = 'Search <span class="text-blue-500">Results</span>';
+        }
+
         bookList.innerHTML = '<div class="loader"></div>';
-        renderBooks(bookList, await fetchBooks(query));
+        const books = await fetchBooks(query);
+        renderBooks(bookList, books);
     };
 
     searchInput.onkeyup = (e) => e.key === 'Enter' && searchButton.onclick();
 
+    // Genre Quick-Click
     genreSection.onclick = async (e) => {
         const genre = e.target.dataset.genre;
         if (!genre) return;
         searchInput.value = genre;
+
+        // Update title for genre discovery
+        const mainTitle = document.querySelector('#home-view h1');
+        if (mainTitle) {
+            mainTitle.innerHTML = `Top <span class="text-blue-500">${genre}</span> Books`;
+        }
+
         bookList.innerHTML = '<div class="loader"></div>';
-        renderBooks(bookList, await fetchBooks(`subject:${genre}`));
+        
+        // FIX: Mapping "Sci-Fi" to "Science Fiction" for Google Books API compatibility
+        let searchQuery = `subject:${genre}`;
+        if (genre.toLowerCase() === 'sci-fi') {
+            searchQuery = 'subject:science fiction';
+        }
+
+        renderBooks(bookList, await fetchBooks(searchQuery));
     };
 
     bookModal.onclick = (e) => e.target === bookModal && closeModal();
 
-    // --- Initial Boot ---
+    // --- Initialization ---
     resetHome();
 });
