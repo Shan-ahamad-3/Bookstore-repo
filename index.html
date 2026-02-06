@@ -1,72 +1,158 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Book Nook - Your Personal Bookstore</title>
-    
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Custom Stylesheet -->
-    <link rel="stylesheet" href="style.css">
-</head>
-<body class="text-white">
+<html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>The Book Nook - Your Personal Bookstore</title>
+<!-- Tailwind CSS Framework -->
+<script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Navigation Bar -->
-    <nav class="bg-gray-900/80 backdrop-blur-sm sticky top-0 z-50 shadow-lg">
-        <div class="container mx-auto px-4">
-            <div class="flex items-center justify-between h-16">
-                <a href="#" id="logo" class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-teal-300">The Book Nook</a>
-                <div class="hidden md:flex space-x-6 text-gray-300">
-                    <a href="#" data-view="home-view" class="nav-link hover:text-white transition-colors">Home</a>
-                    <a href="#" data-view="authors-pick-view" class="nav-link hover:text-white transition-colors">Author's Picks</a>
-                    <a href="#" data-view="favorites-view" class="nav-link hover:text-white transition-colors">Favorites</a>
-                    <a href="#" data-view="about-view" class="nav-link hover:text-white transition-colors">About</a>
-                    <a href="#" data-view="contact-view" class="nav-link hover:text-white transition-colors">Contact</a>
+<!-- Google Fonts: Inter -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Custom Stylesheet -->
+<link rel="stylesheet" href="style.css">
+</head> <body class="text-white bg-[#111827]">
+<!-- Navigation Bar -->
+<nav class="bg-gray-900/90 backdrop-blur-md sticky top-0 z-50 border-b border-gray-800">
+    <div class="container mx-auto px-4 flex items-center justify-between h-16">
+        <!-- Website Logo -->
+        <a href="#" id="logo" class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 transition-opacity hover:opacity-80">
+            The Book Nook
+        </a>
+        
+        <!-- Navigation Links -->
+        <div class="hidden md:flex space-x-8 text-gray-400 font-medium">
+            <a href="#" data-view="home-view" class="nav-link hover:text-white transition-colors">Home</a>
+            <a href="#" data-view="authors-pick-view" class="nav-link hover:text-white transition-colors">Author's Picks</a>
+            <a href="#" data-view="favorites-view" class="nav-link hover:text-white transition-colors">Favorites</a>
+            <a href="#" data-view="about-view" class="nav-link hover:text-white transition-colors">About</a>
+            <a href="#" data-view="contact-view" class="nav-link hover:text-white transition-colors">Contact</a>
+        </div>
+
+        <!-- Mobile Menu Toggle (Icon only for now) -->
+        <div class="md:hidden text-gray-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+            </svg>
+        </div>
+    </div>
+</nav>
+
+<div class="container mx-auto px-4 py-12 min-h-screen">
+    
+    <!-- Home View: Search and Search Results -->
+    <div id="home-view" class="view">
+        <header class="text-center mb-12">
+            <h1 class="text-5xl md:text-6xl font-extrabold mb-4 tracking-tight">
+                Find Your Next <span class="text-blue-500">Story</span>
+            </h1>
+            <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto">
+                Real-time book discovery powered by Google and Gemini AI.
+            </p>
+        </header>
+
+        <!-- Search Interface -->
+        <div class="max-w-3xl mx-auto mb-12">
+            <div class="relative group">
+                <input type="text" id="searchInput" placeholder="Search for books by title, author, or ISBN..." 
+                    class="w-full p-5 pr-32 rounded-2xl bg-gray-800/50 border-2 border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all">
+                <button id="searchButton" class="absolute right-3 top-3 bottom-3 bg-blue-600 hover:bg-blue-700 px-8 rounded-xl font-bold transition-all active:scale-95">
+                    Search
+                </button>
+            </div>
+        </div>
+
+        <!-- Genre Quick-Filters -->
+        <section id="genre-section" class="mb-16">
+            <div class="flex flex-wrap justify-center gap-3">
+                <button data-genre="Romance" class="bg-gray-800 hover:bg-gray-700 py-2.5 px-6 rounded-full text-sm font-semibold transition-all hover:scale-105 active:scale-95">Romance</button>
+                <button data-genre="Horror" class="bg-gray-800 hover:bg-gray-700 py-2.5 px-6 rounded-full text-sm font-semibold transition-all hover:scale-105 active:scale-95">Horror</button>
+                <button data-genre="Philosophy" class="bg-gray-800 hover:bg-gray-700 py-2.5 px-6 rounded-full text-sm font-semibold transition-all hover:scale-105 active:scale-95">Philosophy</button>
+                <button data-genre="Sci-Fi" class="bg-gray-800 hover:bg-gray-700 py-2.5 px-6 rounded-full text-sm font-semibold transition-all hover:scale-105 active:scale-95">Sci-Fi</button>
+                <button data-genre="History" class="bg-gray-800 hover:bg-gray-700 py-2.5 px-6 rounded-full text-sm font-semibold transition-all hover:scale-105 active:scale-95">History</button>
+            </div>
+        </section>
+
+        <!-- Book Results Container -->
+        <main id="book-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-8"></main>
+    </div>
+
+    <!-- Author's Picks View -->
+    <div id="authors-pick-view" class="view hidden">
+        <h2 class="text-4xl font-bold mb-8 text-center text-gray-100">Author's Picks</h2>
+        <main id="authors-pick-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-8"></main>
+    </div>
+
+    <!-- Favorites View -->
+    <div id="favorites-view" class="view hidden">
+        <h2 class="text-4xl font-bold mb-8 text-center text-gray-100">Your Favorites</h2>
+        <main id="favorites-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-8"></main>
+    </div>
+
+    <!-- About View -->
+    <div id="about-view" class="view hidden max-w-3xl mx-auto text-center">
+        <h2 class="text-4xl font-bold mb-8 text-gray-200">About The Book Nook</h2>
+        <div class="bg-gray-800/40 p-10 rounded-3xl border border-gray-700 text-gray-300 leading-relaxed space-y-6 shadow-xl">
+            <p>
+                Welcome to <span class="text-blue-400 font-semibold">The Book Nook</span>! This platform is designed to be your personal bridge to the literary world. 
+            </p>
+            <p>
+                By combining the massive database of Google Books with the advanced reasoning capabilities of Gemini AI, we help you understand stories before you dive in. We believe every reader deserves an intelligent companion to guide them to their next favorite book.
+            </p>
+            <p class="text-sm italic text-gray-500 pt-4">
+                Explore. Discover. Read.
+            </p>
+        </div>
+    </div>
+
+    <!-- Contact View -->
+    <div id="contact-view" class="view hidden max-w-2xl mx-auto">
+        <h2 class="text-4xl font-bold mb-8 text-center text-gray-100">Get In Touch</h2>
+        <div class="bg-gray-800/40 p-10 rounded-3xl border border-gray-700 space-y-8 shadow-xl">
+            <div class="flex items-center space-x-6 group">
+                <div class="bg-blue-500/10 p-5 rounded-2xl text-blue-500 text-2xl font-bold transition-colors group-hover:bg-blue-500/20">📍</div>
+                <div>
+                    <p class="text-gray-400 text-sm uppercase tracking-widest font-bold">Address</p>
+                    <p class="text-xl font-bold">Book's Street, Visakhapatnam, AP, India</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-6 group">
+                <div class="bg-purple-500/10 p-5 rounded-2xl text-purple-500 text-2xl font-bold transition-colors group-hover:bg-purple-500/20">📞</div>
+                <div>
+                    <p class="text-gray-400 text-sm uppercase tracking-widest font-bold">Phone Number</p>
+                    <p class="text-xl font-bold">+91 9398558443</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-6 group">
+                <div class="bg-teal-500/10 p-5 rounded-2xl text-teal-500 text-2xl font-bold transition-colors group-hover:bg-teal-500/20">📧</div>
+                <div>
+                    <p class="text-gray-400 text-sm uppercase tracking-widest font-bold">Email Us</p>
+                    <p class="text-xl font-bold underline hover:text-blue-400 transition-colors">
+                        <a href="mailto:thebooknook@gmail.com">thebooknook@gmail.com</a>
+                    </p>
                 </div>
             </div>
         </div>
-    </nav>
-
-    <!-- Main Container for all views -->
-    <div class="container mx-auto px-4 py-8">
-        
-        <!-- Home View -->
-        <div id="home-view" class="view">
-            <header class="text-center mb-10">
-                <h1 class="text-5xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-teal-300">Find Your Next Story</h1>
-                <p class="text-gray-400 text-lg">Your Real-time Gateway to the World of Books</p>
-            </header>
-            <div class="mb-8 max-w-2xl mx-auto">
-                <div class="relative"><input type="text" id="searchInput" placeholder="Search for books by title, author, or ISBN..." class="w-full p-4 pr-20 rounded-full bg-gray-800 border-2 border-gray-700 focus:outline-none focus:border-blue-500 transition-colors"><button id="searchButton" class="absolute top-1/2 right-2 transform -translate-y-1/2 bg-blue-600 hover:bg-blue-700 rounded-full px-6 py-2.5 font-semibold transition-colors">Search</button></div>
-            </div>
-            <section id="genre-section" class="mb-12 text-center">
-                <h2 class="text-xl font-semibold text-gray-300 mb-4">Or explore by genre</h2>
-                <div class="flex flex-wrap justify-center gap-4"><button data-genre="Romance" class="genre-btn bg-gray-700 text-white font-semibold py-2 px-5 rounded-full">Romance</button><button data-genre="Horror" class="genre-btn bg-gray-700 text-white font-semibold py-2 px-5 rounded-full">Horror</button><button data-genre="Philosophy" class="genre-btn bg-gray-700 text-white font-semibold py-2 px-5 rounded-full">Philosophy</button><button data-genre="Science Fiction" class="genre-btn bg-gray-700 text-white font-semibold py-2 px-5 rounded-full">Sci-Fi</button><button data-genre="History" class="genre-btn bg-gray-700 text-white font-semibold py-2 px-5 rounded-full">History</button></div>
-            </section>
-            <main id="book-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8"></main>
-        </div>
-        
-        <!-- Other Views (Author's Picks, Favorites, About, Contact) -->
-        <div id="authors-pick-view" class="view hidden"><header class="text-center mb-10"><h1 class="text-4xl font-bold text-gray-200">Author's Picks</h1><p class="text-gray-400">A curated collection of timeless masterpieces and award-winning novels.</p></header><main id="authors-pick-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8"></main></div>
-        <div id="favorites-view" class="view hidden"><header class="text-center mb-10"><h1 class="text-4xl font-bold text-gray-200">Your Favorites</h1><p class="text-gray-400">Your personal collection of saved books.</p></header><main id="favorites-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8"></main></div>
-        <div id="about-view" class="view hidden max-w-4xl mx-auto text-center"><header class="mb-10"><h1 class="text-4xl font-bold text-gray-200">About The Book Nook</h1></header><div class="bg-gray-800 p-8 rounded-lg text-lg text-gray-300 space-y-4 leading-relaxed"><p>The Book Nook was born from a simple yet profound love for reading. In a world buzzing with digital distractions, we believe in the timeless power of books to transport us, educate us, and connect us to the vast tapestry of human experience.</p><p>Our mission is to create a seamless and beautiful bridge between you and your next great read. Using the power of the Google Books API and intelligent summaries from the Gemini API, we provide real-time access to a universe of titles. Whether you're searching, saving favorites, or generating book club questions, our platform is your personal, digital bookshelf.</p><p>We are more than just a search engine; we are a community for bibliophiles, a sanctuary for the curious, and a starting point for countless adventures. Thank you for joining us.</p></div></div>
-        <div id="contact-view" class="view hidden max-w-4xl mx-auto text-center"><header class="mb-10"><h1 class="text-4xl font-bold text-gray-200">Get In Touch</h1><p class="text-gray-400">We'd love to hear from you.</p></header><div class="bg-gray-800 p-8 rounded-lg text-lg text-gray-300 space-y-6"><div><h3 class="font-bold text-blue-400">Address</h3><p>Book's Street, Visakhapatnam, AP, India</p></div><div><h3 class="font-bold text-blue-400">Phone</h3><p>+91 9398558443</p></div><div><h3 class="font-bold text-blue-400">Email</h3><p><a href="mailto:thebooknook@gmail.com" class="hover:underline">thebooknook@gmail.com</a></p></div></div></div>
     </div>
+</div>
 
-    <!-- Footer -->
-    <footer class="text-center mt-12 py-8 bg-gray-900"><p class="text-gray-400">&copy; 2025 The Book Nook. Created by Zeeshan Ahamad.</p><p class="text-sm text-gray-500 mt-1">Powered by the Google Books API & Gemini API</p></footer>
+<!-- Website Footer -->
+<footer class="py-12 bg-gray-900 border-t border-gray-800 text-center">
+    <p class="text-gray-400">
+        Created by <span class="text-white font-bold">Md. Zeeshan Ahamad</span>
+    </p>
+    <p class="text-xs text-gray-600 mt-2 uppercase tracking-widest">
+        Google Books API • Gemini AI Integration
+    </p>
+</footer>
 
-    <!-- Book Summary Modal -->
-    <div id="book-modal" class="modal-backdrop"><div id="modal-content-box" class="modal-content"></div></div>
+<!-- Book Summary Popup (Modal) -->
+<div id="book-modal" class="modal-backdrop" aria-hidden="true" role="dialog">
+    <div id="modal-content-box" class="modal-content">
+        <!-- Content dynamically generated by JavaScript -->
+    </div>
+</div>
 
-    <!-- Custom JavaScript -->
-    <script src="script.js"></script>
+<!-- Custom Logic Script -->
+<script src="script.js"></script>
 </body>
-</html>
+ </html>
